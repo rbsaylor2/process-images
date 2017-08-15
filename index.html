@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+  <img id="img-preview" src="http://placehold.it/150x150" alt="">
+  <!-- https://res.cloudinary.com/dkibvchaf/image/upload/w_200,h_200,c_fill,g_auto,q_auto,e_trim/e_make_transparent:10/v1502738784/ujikupqgvuxn2xeywvet.jpg -->
+  <input id="file-upload" type="file">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.2/axios.min.js"></script>
+  <script>
+    const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dkibvchaf/upload';
+    const CLOUDINARY_UPLOAD_PRESET = 'jgqwrb1i';
+    const CLOUDINARY_RESULT = 'https://res.cloudinary.com/dkibvchaf/image/upload/'
+    var imgPreview = document.getElementById('img-preview');
+    var fileUpload = document.getElementById('file-upload');
+
+    fileUpload.addEventListener('change', function(e){
+      var file = e.target.files[0];
+      var formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET)
+
+      axios({
+        url: CLOUDINARY_URL,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        data: formData
+      }).then(function(res) {
+        console.log(res)
+        imgPreview.src = CLOUDINARY_RESULT + 'w_200,h_200,c_fill,g_auto,q_auto,e_trim/e_make_transparent:10/' + 'v' + res.data.version + '/' + res.data.public_id + '.jpg';
+      }).catch(function(err) {
+        console.log(err)
+      })
+    })
+  </script>
+</body>
+</html>
